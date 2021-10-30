@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.126.0",
-    "@serverless-stack/cli": "0.49.1",
-    "@serverless-stack/resources": "0.49.1",
+    "@serverless-stack/cli": "0.50.1",
+    "@serverless-stack/resources": "0.50.1",
     "firebase-admin": "^10.0.0"
   }
 }

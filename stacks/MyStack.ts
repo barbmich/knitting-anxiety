@@ -1,29 +1,34 @@
 import * as sst from "@serverless-stack/resources";
 import { HttpJwtAuthorizer } from "@aws-cdk/aws-apigatewayv2-authorizers";
 import { ApiAuthorizationType } from "@serverless-stack/resources";
-
-import { DotenvParseOutput } from "dotenv";
-
-interface MyStackProps extends sst.AppProps {
-  env_vars: DotenvParseOutput;
-}
+import { ENVIRONMENT_VARIABLES } from "../config/environmentVariables";
 
 export default class MyStack extends sst.Stack {
-  constructor(scope: sst.App, id: string, props: MyStackProps) {
+  constructor(scope: sst.App, id: string, props?: sst.StackProps) {
     super(scope, id, props);
-    const { env_vars } = props;
 
     const authAuthorizer = new HttpJwtAuthorizer({
-      jwtIssuer: `${env_vars.FIREBASE_ADMIN_ISSUER}/${env_vars.FIREBASE_ADMIN_PROJECT_ID}`,
-      jwtAudience: [`${env_vars.FIREBASE_ADMIN_PROJECT_ID}`],
+      jwtIssuer: `${ENVIRONMENT_VARIABLES.FIREBASE_ADMIN_ISSUER}/${ENVIRONMENT_VARIABLES.FIREBASE_ADMIN_PROJECT_ID}`,
+      jwtAudience: [`${ENVIRONMENT_VARIABLES.FIREBASE_ADMIN_PROJECT_ID}`],
     });
 
     // Create a HTTP API
     const api = new sst.Api(this, "Api", {
       defaultAuthorizationType: ApiAuthorizationType.JWT,
       defaultAuthorizer: authAuthorizer,
+      defaultFunctionProps: {
+        environment: {
+          ...ENVIRONMENT_VARIABLES,
+        },
+      },
       routes: {
         "GET /": "src/lambda.handler",
+        "GET /register": {
+          authorizationType: ApiAuthorizationType.NONE,
+          function: {
+            handler: "src/register.handler",
+          },
+        },
       },
     });
 
@@ -31,7 +36,7 @@ export default class MyStack extends sst.Stack {
       path: "frontend",
       environment: {
         REGION: scope.region,
-        ...env_vars,
+        ...ENVIRONMENT_VARIABLES,
       },
     });
 

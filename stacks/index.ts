@@ -9,20 +9,7 @@ export default function main(app: sst.App): void {
   });
 
   try {
-    const { parsed } = config({ path: ".env.local" });
-    if (!parsed || !Object.keys(parsed).length) {
-      throw new Error("No Environment Variables available");
-    }
-
-    for (const key in parsed) {
-      if (!parsed[key]) {
-        throw new Error(
-          `Value for ${key} Environment Variable is missing in the .env.local file`
-        );
-      }
-    }
-
-    new MyStack(app, "my-stack", { env_vars: parsed });
+    new MyStack(app, "my-stack");
 
     // Add more stacks
   } catch (error) {

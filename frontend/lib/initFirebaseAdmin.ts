@@ -8,12 +8,12 @@ import {
 import { getAuth } from "firebase-admin/auth";
 
 const serviceAccount: ServiceAccount = {
-  clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL as string,
+  clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
   privateKey: (process.env.FIREBASE_ADMIN_PRIVATE_KEY as string).replace(
     /\\n/g,
     "\n"
   ),
-  projectId: process.env.FIREBASE_ADMIN_PROJECT_ID as string,
+  projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
 };
 
 export const adminFirebase = !getApps().length
